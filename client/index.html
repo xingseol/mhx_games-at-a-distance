@@ -164,57 +164,7 @@
 	            }*/
 	        </script>
 	    </div>
-                <style>
-            .button{
-                border: #000;
-                color: white;
-                margin: 200px 120px; 
-                padding: 75px 100px; 
-                display: inline-block;
-                font-size: 32px;
-                cursor: pointer; 
-            }
-            .button1{background-color: #4CAF50;}
-            .button2{background-color: #008CBA;}
-            .form-container {
-            max-width: 200px;
-            padding: 7px;
-            border: none;
-            background-color: #008CBA;
-            }
-            .form-container1 {
-            max-width: 200px;
-            padding: 7px;
-            border: none;
-            background-color: #4CAF50;
-            }
-            .form-container1 input[type=text], .form-container1 input[type=password] {
-            width: 100%;
-            padding: 15px;
-            margin: 5px 0 22px 0;
-            border: none;
-            background: #f1f1f1;
-            }  
-            .form-container input[type=text], .form-container input[type=password] {
-            width: 100%;
-            padding: 15px;
-            margin: 5px 0 22px 0;
-            border: none;
-            background: #f1f1f1;
-            }
-            .form-container input[type=text]:focus, .form-container input[type=password]:focus {
-            background-color: #ddd;
-            outline: 10px;
-            }
-            .form-container .btn:hover, .open-button:hover {
-              opacity: 1;
-            } 
-            .form-container .cancel {
-            background-color: red;
-            }  
-
-
-        </style>
+                
     
   
     </head>
@@ -237,99 +187,14 @@
 			<img src="https://i.ytimg.com/vi/8cjzvJToHwo/maxresdefault.jpg" alt="lossimage" id="lost" style="opacity:0.0;position: absolute;  left: -999999px;">
 			<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ-QHrOzti9ge7CNg6oYNVZyAF0TsA2xQ8rE6YpqyfUDrmuI4Sg&usqp=CAU " alt="wonimage" id="won" style="opacity:0.0;position: absolute;  left: -999999px;">
 		</div>
-      	<div id = "buttondiv">
-        <button id="button1" class="button button1 open-button" onclick="openForm1()"> Join a Lobby</button>
-        <button id= "button2" class="button button2 open-button" onclick="openForm()"> Create a Lobby</button>
-        </div>
-
-        <div id = "modal1" class = "modal">
-          <div class = "modal-content">
-            <span class ="close">&times; </span>
-            <div class = "form-popup" id = "creating-lobby" style = "position:fixed; left: 570px; top: 250px">
-          <form id = "create-lobby" class = "form-container" style="display: none;" >
-
-            <header id = "headerform1">Create Lobby</header>
-            <label for="text" id = "lobby-name-label"> Lobby Name:</label>
-            <input type="text" id="lobby-name" placeholder="Enter Lobby Name">
-
-
-            <div id = "password">
-                <label for ="text" id = "lobby-password-label"> Password:</label>
-                <input type = "text" id = "lobby-password" placeholder = "Enter password">
-            </div>
-
-
-            <div id = "nickname">
-                <label for = "text" id="label-for-nickname"> Nickname: </label>
-                <input type = "text" id ="name" placeholder ="Enter a Nickname">
-            </div>
-                <!--this button basically calls the function grabText() inside the javascript code -->
-                <button onclick="lobby(0)" id="submitBtn1"> Go! </button>
-            </form>
-            </div>
-
-          </div>
-
-        </div>
-
-    <!---form2--->
-      <div class = "form-popup" id = "joining-lobby" style = "position:fixed; left: 510px; top: 250px">
-
-        <form id = "join-lobby"  class = "form-container1" style = "display: none;">
-
-          <header id ='headerforform2'> Join a Lobby </header>
-          <label for "text" id = "lobby-name-label-2"> Lobby Name: </label>
-
-          <input type="text" id="lobby-name2" placeholder="Enter Lobby Name">
-
-            <div id = "password">
-                <label for ="text" id="passwordlabel2">Password:</label>
-                <input type = "text" id = "lobby-password-2" placeholder = "Enter password">
-            </div>
-
-            <div id = "nickname">
-                <label for = "text"> Nickname: </label>
-                <input type = "text" id ="name2" placeholder ="Enter a Nickname">
-
-
-            </div>
-                <!--this button basically calls the function grabText() inside the javascript code -->
-                <button onclick="lobby(1)" id="submitBtn2"> Go! </button>
-        </form>
-      </div>
-
-
+      	
     </body>
 
 
-<script>
-  function openForm() {
-  document.getElementById("create-lobby").style.display = "block";
-  document.getElementById("join-lobby").style.display = "none";
-}
-function openForm1(){
-  document.getElementById("join-lobby").style.display = "block"
-  document.getElementById("create-lobby").style.display = "none";
-}
-</script>
 
 
 <!----in-game elements--->
-<body>
-   <div id="current-lobby-div" class="col animated">
-      <div id="current-lobby-box" class="border-box">
-        <h3 id="lobby-members">Lobby Members:</h3>
-    </div>
 
-   </div>
-   
-  </div>
-
-
-
-
-
-</body>
 
 	
 </html>
