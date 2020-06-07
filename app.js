@@ -12,7 +12,8 @@ app.get('/', function(req, res) {
 app.use('/client',express.static(__dirname + '/client'));
 
 //starting the server on port 2000
-serv.listen(1500);
+var port = process.env.PORT || 2000;
+serv.listen(port);
 console.log("Server started")
 
 
