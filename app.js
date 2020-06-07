@@ -22,7 +22,7 @@ var PLAYER_LIST= {};
 
 //list of all sockets and players
 var server = {
-	main: {
+	one: {
 		playingGamesBools: {
 			playinghangman: false
 		},
@@ -81,7 +81,7 @@ var Player = function(id){
 	var self = {
 		id: id,
 		name: "anonymous",
-		cserver: "main",
+		cserver: "one",
 		number: 0
 	}
 	self.getNumber = () => {
@@ -101,7 +101,7 @@ io.sockets.on('connection', function(socket){
 
 	//add to the socket list
 	SOCKET_LIST[socket.id] = socket;
-	socket.currentserver = "main";
+	socket.currentserver = "one";
 	//generate a player object
 	server[socket.currentserver].num_players++;
 	console.log(server[socket.currentserver].num_players + ' players in '+ socket.currentserver);
