@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Name of Website </title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="style.css">
+         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+         <link rel="stylesheet" href="w3.css">
+
+
+         
+         <script defer src="/socket.io/socket.io.js"></script>
+        <script defer src="lobbies.js"></script>
+        <script defer src="main.js"></script>
+        <style>
+			body{
+				font-family: 'Verdana';
+			}
+		</style>
+		<div class="game">
+			<canvas id="ctx" width="500" height="500" style="border:1px solid #ffffff ;background-color:white;"></canvas>
+	         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+	         <script type="text/javascript">
+
+                //THIS JAVASCRIPT IS RUNS THE GAME
+
+	         	//canvas management
+	         	var ctx = document.getElementById("ctx").getContext("2d");
+				ctx.font = "12px Verdana";
+				const width = 500;
+				const height = 500;
+
+				//create the connection
+				var socket = io();
+
+				//client's username
+				var username = "";
+
+				//lobbydata (when generated)
+				var lobbydata;
+
+				//holds relevant server data
+				var playingGamesBools;
+				var currentserver = "";
+
+				socket.on('sendSocketData', (socketdata) => {
+					currentserver = socketdata;
+				})
+
+				//updating the canvas constantly
+				socket.on('gameUpdate',function(contents){
+					var data = contents[currentserver];
+					//update data
+					playingGamesBools = data.playingGamesBools;
+					//redraw background
+					ctx.clearRect(0,0,500,500);
+
+					//special font for subtitles
+					ctx.font = "20px Verdana";
+					ctx.fillText("Players: ", 10, 30);
+					//show which lobby they are in
+					ctx.fillText("Lobby: " + currentserver, 330, 30);
+					ctx.font = "14px Verdana";
+
+					//draw in connected players on the side
+					for(let i = 0; i < data.playerdata.length; i++){
+						//show which users are online on the left
+						ctx.fillText(data.playerdata[i].name, 10, data.playerdata[i].number*25 + 35);
+					}
+
+					if(playingGamesBools.playinghangman){
+						//draw hangman here
+
+
+						if(data.game.lose){
+							console.log('lose');
+							let image = document.getElementById("lost");
+							ctx.drawImage(image, 0, 0, 500, 500);
+						}
+						else if(data.game.win){
+							console.log('win');
+							let image = document.getElementById("won");
+							ctx.drawImage(image, 0, 0, 500, 500);
+						}
+						else{
+							var img = document.getElementById(`${data.game.errors}error`);
+							ctx.drawImage(img, 150, 40, 240, 240);
+							
+							ctx.font = "20px Verdana";
+							for(var b = 1; b <= data.game.wordstate.length; b++){
+								ctx.fillText(data.game.wordstate[b-1], 200 + b*25, 350);
+							}
+							ctx.font = "14px Verdana";
+							ctx.fillText("Wrong Guesses: ", 30, 390);
+							for(var b = 1; b <= data.game.wrongletters.length; b++){
+								ctx.fillText(data.game.wrongletters[b-1], 140 + b*25, 390);
+							}
+						}
+					}
+				})
+
+
+				function getUser(){
+					username = document.getElementById("userName").value;
+					console.log("username updated to " + username);
+					socket.emit('usernameUpdate', username);
+				}
+				
+				
+
+				function hangmanStart(){
+
+					if(!playingGamesBools.playinghangman){
+						socket.emit('hangmanStart', currentserver);
+						playingGamesBools.playinghangman = true;
+					}
+					else{
+						alert("already playing hangman!");
+					}
+				}
+
+				function guess(){
+					contents = document.getElementById("hangman-guess").value;
+					if(contents.length > 1){
+						alert('guess must be a letter!');
+						return;
+					}
+                    
+					socket.emit('guess', [contents, currentserver]);
+				}
+		      /*
+	            //this function gets called by the button
+	            function lobby(a){
+	                //use an object to hold all the input values
+	                if(a == 0) {
+
+                		lobbydata = {
+                    	//get data from the input tag using .getElementById().values
+                    	lobbyName: document.getElementById("lobby-name").value,
+                    	password: document.getElementById("lobby-password").value,
+                    	name: document.getElementById("name").value
+	                	};
+	                	currentserver = lobbydata.lobbyName;
+	                	socket.emit('createlobby', lobbydata);
+	                	socket.emit('updateclientlobby', lobbydata.lobbyName);
+
+	               	}
+	                else {
+
+                    	lobbydata = {
+                    	//get data from the input tag using .getElementById().values
+                    	lobbyName: document.getElementById("lobby-name2").value,
+                    	password: document.getElementById("lobby-password-2").value,
+                    	name: document.getElementById("name2").value
+	                	};
+
+	                	socket.emit('joinlobby', lobbydata)
+	                }
+	                //output it onto the console for you to see
+	                alert(lobbydata.lobbyName + ", " + lobbydata.password + ", " + lobbydata.name);
+	            }*/
+	        </script>
+	    </div>
+                <style>
+            .button{
+                border: #000;
+                color: white;
+                margin: 200px 120px; 
+                padding: 75px 100px; 
+                display: inline-block;
+                font-size: 32px;
+                cursor: pointer; 
+            }
+            .button1{background-color: #4CAF50;}
+            .button2{background-color: #008CBA;}
+            .form-container {
+            max-width: 200px;
+            padding: 7px;
+            border: none;
+            background-color: #008CBA;
+            }
+            .form-container1 {
+            max-width: 200px;
+            padding: 7px;
+            border: none;
+            background-color: #4CAF50;
+            }
+            .form-container1 input[type=text], .form-container1 input[type=password] {
+            width: 100%;
+            padding: 15px;
+            margin: 5px 0 22px 0;
+            border: none;
+            background: #f1f1f1;
+            }  
+            .form-container input[type=text], .form-container input[type=password] {
+            width: 100%;
+            padding: 15px;
+            margin: 5px 0 22px 0;
+            border: none;
+            background: #f1f1f1;
+            }
+            .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+            background-color: #ddd;
+            outline: 10px;
+            }
+            .form-container .btn:hover, .open-button:hover {
+              opacity: 1;
+            } 
+            .form-container .cancel {
+            background-color: red;
+            }  
+
+
+        </style>
+    
+  
+    </head>
+    <!---form 1--->
+    <body style="background-color:grey;">
+    	<div id="gamestuff">
+			<label for="text"> Enter a letter: </label>
+			<input type="text" id="hangman-guess">
+			<button onclick="guess()" id="hangman-submit"> Guess! </button>
+			<input type="text" id="userName" placeholder="enter username">
+			<button onclick="getUser()" id="userBtn"> Submit </button>
+			<button onclick="hangmanStart()" id="hangmanselect"> Start Hangman Game!</button>
+			<img src="https://www.justhangman.com/images/hangman_0.gif" alt="no mistakes" id="0error" style="opacity:0.0;position: absolute;  left: -999999px;">
+			<img src="https://www.justhangman.com/images/hangman_1.gif" alt="one mistakes" id="1error" style="opacity:0.0;position: absolute;  left: -999999px;">
+			<img src="https://www.justhangman.com/images/hangman_2.gif" alt="two mistakes" id="2error" style="opacity:0.0;position: absolute;  left: -999999px;">
+			<img src="https://www.justhangman.com/images/hangman_3.gif" alt="three mistakes" id="3error" style="opacity:0.0;position: absolute;  left: -999999px;">
+			<img src="https://www.justhangman.com/images/hangman_4.gif" alt="four mistakes" id="4error" style="opacity:0.0;position: absolute;  left: -999999px;">
+			<img src="https://www.justhangman.com/images/hangman_5.gif" alt="five mistakes" id="5error" style="opacity:0.0;position: absolute;  left: -999999px;">
+			<img src="https://www.justhangman.com/images/hangman_6.gif" alt="six mistakes" id="6error" style="opacity:0.0;position: absolute;  left: -999999px;">
+			<img src="https://i.ytimg.com/vi/8cjzvJToHwo/maxresdefault.jpg" alt="lossimage" id="lost" style="opacity:0.0;position: absolute;  left: -999999px;">
+			<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ-QHrOzti9ge7CNg6oYNVZyAF0TsA2xQ8rE6YpqyfUDrmuI4Sg&usqp=CAU " alt="wonimage" id="won" style="opacity:0.0;position: absolute;  left: -999999px;">
+		</div>
+      	<div id = "buttondiv">
+        <button id="button1" class="button button1 open-button" onclick="openForm1()"> Join a Lobby</button>
+        <button id= "button2" class="button button2 open-button" onclick="openForm()"> Create a Lobby</button>
+        </div>
+
+        <div id = "modal1" class = "modal">
+          <div class = "modal-content">
+            <span class ="close">&times; </span>
+            <div class = "form-popup" id = "creating-lobby" style = "position:fixed; left: 570px; top: 250px">
+          <form id = "create-lobby" class = "form-container" style="display: none;" >
+
+            <header id = "headerform1">Create Lobby</header>
+            <label for="text" id = "lobby-name-label"> Lobby Name:</label>
+            <input type="text" id="lobby-name" placeholder="Enter Lobby Name">
+
+
+            <div id = "password">
+                <label for ="text" id = "lobby-password-label"> Password:</label>
+                <input type = "text" id = "lobby-password" placeholder = "Enter password">
+            </div>
+
+
+            <div id = "nickname">
+                <label for = "text" id="label-for-nickname"> Nickname: </label>
+                <input type = "text" id ="name" placeholder ="Enter a Nickname">
+            </div>
+                <!--this button basically calls the function grabText() inside the javascript code -->
+                <button onclick="lobby(0)" id="submitBtn1"> Go! </button>
+            </form>
+            </div>
+
+          </div>
+
+        </div>
+
+    <!---form2--->
+      <div class = "form-popup" id = "joining-lobby" style = "position:fixed; left: 510px; top: 250px">
+
+        <form id = "join-lobby"  class = "form-container1" style = "display: none;">
+
+          <header id ='headerforform2'> Join a Lobby </header>
+          <label for "text" id = "lobby-name-label-2"> Lobby Name: </label>
+
+          <input type="text" id="lobby-name2" placeholder="Enter Lobby Name">
+
+            <div id = "password">
+                <label for ="text" id="passwordlabel2">Password:</label>
+                <input type = "text" id = "lobby-password-2" placeholder = "Enter password">
+            </div>
+
+            <div id = "nickname">
+                <label for = "text"> Nickname: </label>
+                <input type = "text" id ="name2" placeholder ="Enter a Nickname">
+
+
+            </div>
+                <!--this button basically calls the function grabText() inside the javascript code -->
+                <button onclick="lobby(1)" id="submitBtn2"> Go! </button>
+        </form>
+      </div>
+
+
+    </body>
+
+
+<script>
+  function openForm() {
+  document.getElementById("create-lobby").style.display = "block";
+  document.getElementById("join-lobby").style.display = "none";
+}
+function openForm1(){
+  document.getElementById("join-lobby").style.display = "block"
+  document.getElementById("create-lobby").style.display = "none";
+}
+</script>
+
+
+<!----in-game elements--->
+<body>
+   <div id="current-lobby-div" class="col animated">
+      <div id="current-lobby-box" class="border-box">
+        <h3 id="lobby-members">Lobby Members:</h3>
+    </div>
+
+   </div>
+   
+  </div>
+
+
+
+
+
+</body>
+
+	
+</html>
+
